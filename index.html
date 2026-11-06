@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Missing Fundraiser Money: An Advanced Mock Trial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;800&family=Lexend:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF0F3; --surface:#FFFFFF; --ink:#1B2A3A; --muted:#55626F; --line:#CDD4DB;
+  --navy:#1B2A3A; --navy-ink:#F2F5F8; --kraft:#C3964E; --kraft-soft:#F4EAD7;
+  --red:#A83A2E; --red-soft:#F6E2DF; --teal:#1C6B73; --teal-soft:#DDEFF0;
+  --ok:#2C6B44; --ok-soft:#E0F0E5;
+  --head:"Bitter", Rockwell, Georgia, serif;
+  --body:"Lexend", "Segoe UI", Verdana, system-ui, sans-serif;
+  color-scheme:light; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121820; --surface:#1B232D; --ink:#E6EBF0; --muted:#A3AFBB; --line:#334150;
+    --navy:#0D141C; --navy-ink:#E6EBF0; --kraft:#D9B06A; --kraft-soft:#352C1D;
+    --red:#E58377; --red-soft:#3A2220; --teal:#6FC3CB; --teal-soft:#183338;
+    --ok:#7CC496; --ok-soft:#1E3427; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121820; --surface:#1B232D; --ink:#E6EBF0; --muted:#A3AFBB; --line:#334150;
+  --navy:#0D141C; --navy-ink:#E6EBF0; --kraft:#D9B06A; --kraft-soft:#352C1D;
+  --red:#E58377; --red-soft:#3A2220; --teal:#6FC3CB; --teal-soft:#183338;
+  --ok:#7CC496; --ok-soft:#1E3427; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 70px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:1.02rem;line-height:1.65}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--navy)}
+h1,h2,h3,h4{font-family:var(--head);line-height:1.2;margin:0 0 .5em}
+h2{font-size:clamp(1.55rem,3.4vw,2.05rem)} h3{font-size:1.25rem} h4{font-size:1.08rem}
+p{margin:0 0 1em}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--kraft);outline-offset:2px}
+[tabindex="-1"]:focus{outline:none}
+
+.bar{background:var(--navy);color:var(--navy-ink);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.bar-in{max-width:980px;margin:0 auto;padding:.55rem 1rem 0}
+.bar .title{font-family:var(--head);font-weight:800;font-size:1.05rem;display:block;margin-bottom:.4rem}
+.tabs{display:flex;gap:.2rem;overflow-x:auto;list-style:none;margin:0;padding:0}
+.tabs button{background:rgba(255,255,255,.07);border:0;color:var(--navy-ink);padding:.4rem .75rem .45rem;border-radius:8px 8px 0 0;white-space:nowrap;font-size:.86rem;opacity:.75}
+.tabs button[aria-current="step"]{background:var(--bg);color:var(--ink);opacity:1;font-weight:600}
+
+main{max-width:980px;margin:0 auto;padding:1.75rem 1rem 3rem}
+section[hidden]{display:none}
+.lede{font-size:1.12rem;color:var(--muted);max-width:64ch}
+.prose{max-width:68ch}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:1.1rem 1.3rem;margin:1rem 0}
+.note{border-left:5px solid var(--kraft);background:var(--kraft-soft);border-radius:4px;padding:.85rem 1.1rem;margin:1rem 0;max-width:72ch}
+.note p:last-child{margin:0}
+
+/* Cover */
+.cover{background:var(--kraft-soft);border:1px solid var(--kraft);border-radius:4px 14px 4px 4px;padding:1.6rem 1.5rem;position:relative;margin-bottom:1.5rem}
+.cover h1{font-size:clamp(2rem,5.5vw,3.2rem);font-weight:800;margin-bottom:.3rem}
+.cover .sub{font-size:1.1rem;max-width:58ch;margin:0}
+.stamp{position:absolute;right:1.2rem;top:1.1rem;border:3px solid var(--red);color:var(--red);font-family:var(--head);font-weight:800;padding:.2rem .7rem;border-radius:6px;transform:rotate(6deg);font-size:1rem;background:var(--surface)}
+@media (max-width:600px){.stamp{position:static;display:inline-block;margin-bottom:.8rem;transform:rotate(-2deg)}}
+
+.timeline{list-style:none;margin:1rem 0;padding:0;border-left:3px solid var(--kraft)}
+.timeline li{padding:.25rem 0 .55rem 1rem;position:relative}
+.timeline li::before{content:"";position:absolute;left:-8px;top:.75rem;width:13px;height:13px;border-radius:50%;background:var(--surface);border:3px solid var(--kraft)}
+.timeline b{font-family:var(--head)}
+.people{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.6rem}
+.people div{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:.7rem .9rem;font-size:.95rem}
+.people b{display:block;font-family:var(--head)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0}
+@media (max-width:700px){.two{grid-template-columns:1fr}}
+.casebox{border-radius:10px;padding:1rem 1.2rem;border:2px solid}
+.casebox.crim{border-color:var(--red);background:var(--red-soft)}
+.casebox.civ{border-color:var(--teal);background:var(--teal-soft)}
+.casebox h3{margin-bottom:.15rem}
+.casebox.crim h3{color:var(--red)} .casebox.civ h3{color:var(--teal)}
+.casebox .name{font-family:var(--head);margin-bottom:.5rem}
+.casebox ol,.casebox ul{margin:.3rem 0 .6rem;padding-left:1.3rem}
+.casebox p{margin:0 0 .5rem;font-size:.97rem}
+
+/* Exhibits */
+.ex{background:var(--surface);border:1px solid var(--line);border-radius:10px;margin:1rem 0;overflow:hidden}
+.ex-h{display:flex;gap:.8rem;align-items:baseline;padding:.8rem 1.2rem .2rem}
+.ex-n{font-family:var(--head);font-weight:800;color:var(--kraft);white-space:nowrap}
+.ex-h h4{margin:0}
+.ex-body{padding:.2rem 1.2rem 1rem}
+.ex .by{color:var(--muted);font-size:.92rem;margin-bottom:.4rem}
+.cross{border-left:3px solid var(--kraft);padding:.2rem .85rem;margin:.6rem 0;color:var(--muted);font-size:.96rem}
+.cross[hidden]{display:none}
+.linkish{background:none;border:0;padding:0;color:var(--kraft);font-weight:600;text-decoration:underline}
+.check{border-top:1px dashed var(--line);margin-top:.8rem;padding-top:.8rem}
+.check .q{font-weight:600;margin-bottom:.45rem}
+.opts{display:grid;gap:.4rem}
+.opt{text-align:left;border:1.5px solid var(--line);background:var(--bg);border-radius:8px;padding:.5rem .8rem}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.wrong{border-color:var(--red);background:var(--red-soft)}
+.opt:disabled{cursor:default}
+.fb{margin:.6rem 0 0;font-size:.96rem}
+.fb:empty{display:none}
+.tag{display:inline-block;font-size:.8rem;font-weight:600;padding:.05rem .55rem;border-radius:999px;margin-left:.3rem}
+.tag.out{background:var(--red-soft);color:var(--red)}
+.tag.new{background:var(--teal-soft);color:var(--teal)}
+
+/* Rulings */
+.ruling .actions{margin-top:.5rem}
+
+/* Sliders */
+.el{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:1rem 1.2rem;margin:.8rem 0}
+.el label{font-weight:600;display:block}
+.el .hint{color:var(--muted);font-size:.93rem;margin:.2rem 0 0}
+.meter{position:relative;height:36px;margin-top:1.9rem}
+.track{position:absolute;inset:10px 0;border-radius:8px;background:var(--line);overflow:hidden}
+.fill{position:absolute;inset:0 auto 0 0;background:var(--kraft)}
+.mark{position:absolute;top:0;bottom:0;border-left:3px dashed}
+.mark span{position:absolute;bottom:100%;font-size:.8rem;font-weight:600;white-space:nowrap;padding-bottom:.1rem}
+.mark.b90{left:90%;border-color:var(--red)} .mark.b90 span{color:var(--red);right:-1rem}
+.mark.b50{left:50%;border-color:var(--teal)} .mark.b50 span{color:var(--teal);transform:translateX(-50%)}
+input[type=range]{width:100%;accent-color:var(--kraft);height:2rem;margin:.3rem 0 0}
+.readout{font-weight:600;margin:.1rem 0 0}
+.status{font-size:.9rem;font-weight:600}
+.status.met{color:var(--ok)} .status.not{color:var(--red)}
+
+.yn{display:flex;gap:.4rem;margin-top:.5rem;flex-wrap:wrap}
+.chip{border:1.5px solid var(--line);background:var(--bg);border-radius:999px;padding:.3rem .95rem}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1rem}
+.btn{border:0;border-radius:8px;padding:.7rem 1.2rem;font-weight:600;background:var(--ink);color:var(--bg)}
+.btn.crim{background:var(--red);color:#fff} .btn.civ{background:var(--teal);color:#fff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn.crim,:root:not([data-theme="light"]) .btn.civ{color:#111}}
+:root[data-theme="dark"] .btn.crim,:root[data-theme="dark"] .btn.civ{color:#111}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.verdict{border:2px solid var(--kraft);background:var(--kraft-soft);border-radius:10px;padding:1rem 1.25rem;margin-top:1rem}
+.verdict[hidden]{display:none}
+
+textarea{width:100%;min-height:150px;border:1.5px solid var(--line);border-radius:8px;padding:.7rem .85rem;background:var(--bg);resize:vertical}
+.rubric{list-style:none;padding:0;margin:.6rem 0 0}
+.rubric li{margin:.3rem 0}
+.rubric label{display:flex;gap:.55rem;align-items:flex-start}
+.rubric input{margin-top:.35rem;accent-color:var(--kraft);width:1.05rem;height:1.05rem}
+
+/* Contradiction board */
+.board{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:.6rem;margin-top:.8rem}
+.stmt{text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:10px;padding:.7rem .9rem;position:relative}
+.stmt small{display:block;color:var(--muted);font-size:.84rem;margin-bottom:.2rem}
+.stmt[aria-pressed="true"]{border-color:var(--kraft);box-shadow:0 0 0 3px var(--kraft-soft)}
+.stmt.matched{border-color:var(--red);background:var(--red-soft);cursor:default}
+.stmt .pin{position:absolute;top:-.6rem;right:.6rem;background:var(--red);color:#fff;font-family:var(--head);font-weight:800;border-radius:50%;width:1.6rem;height:1.6rem;display:grid;place-items:center;font-size:.85rem}
+:root[data-theme="dark"] .stmt .pin{color:#111}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .stmt .pin{color:#111}}
+.boardmsg{min-height:1.5em;font-weight:600;margin-top:.7rem}
+.found{margin-top:.6rem}
+.found p{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--red);border-radius:6px;padding:.6rem .9rem;margin:.5rem 0}
+
+.testimony dt{font-weight:600;margin-top:.7rem}
+.testimony dd{margin:.15rem 0 0 1rem}
+
+/* Damages */
+.ledger{width:100%;border-collapse:collapse;margin-top:.6rem}
+.ledger td{padding:.5rem .3rem;border-bottom:1px solid var(--line);vertical-align:top}
+.ledger td.amt{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;font-weight:600}
+.ledger tr.total td{border-bottom:0;border-top:2px solid var(--ink);font-family:var(--head);font-size:1.15rem}
+.ledger label{display:flex;gap:.55rem;align-items:flex-start}
+.ledger input{margin-top:.35rem;accent-color:var(--kraft);width:1.05rem;height:1.05rem}
+
+/* Debrief */
+.scores{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.6rem;margin:1rem 0}
+.scores div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:.8rem 1rem}
+.scores b{display:block;font-family:var(--head);font-size:1.5rem}
+.scores span{color:var(--muted);font-size:.92rem}
+.tbl-wrap{overflow-x:auto;margin-top:1rem}
+table.cmp{border-collapse:collapse;width:100%;min-width:620px;background:var(--surface)}
+.cmp th,.cmp td{border:1px solid var(--line);padding:.65rem .8rem;text-align:left;vertical-align:top}
+.cmp thead th{font-family:var(--head)}
+.cmp thead th.c1{color:var(--red);background:var(--red-soft)}
+.cmp thead th.c2{color:var(--teal);background:var(--teal-soft)}
+.cmp tbody th{width:22%}
+.cmp td.same{background:var(--kraft-soft)}
+
+.pager{display:flex;justify-content:space-between;gap:.6rem;margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--line)}
+.score{font-family:var(--head);font-size:1.25rem;margin-top:1rem}
+details.teacher{margin-top:2.5rem;border:1px dashed var(--line);border-radius:8px;padding:.8rem 1.1rem}
+details.teacher summary{font-weight:600;cursor:pointer}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="bar-in">
+    <span class="title">🗂️ The Missing Fundraiser Money</span>
+    <ol class="tabs" id="tabs"></ol>
+  </div>
+</header>
+
+<main>
+<!-- 0 CASE FILE -->
+<section data-step="0" aria-labelledby="h0">
+  <div class="cover">
+    <span class="stamp">Advanced case</span>
+    <h1 id="h0">The Missing Fundraiser Money</h1>
+    <p class="sub">$3,100 of a youth soccer league’s money is gone. You’ll act as judge, then juror, in a criminal trial and a civil trial. This time the evidence has holes, the witnesses don’t always agree, and some evidence is allowed in one courtroom but not the other.</p>
+  </div>
+
+  <h2>What happened</h2>
+  <div class="prose">
+    <p>On Saturday, April 11, the Harbor Youth Soccer League held a car wash and bake sale to raise money for new uniforms. When it ended, two volunteers counted the cash box and wrote the total on a count sheet.</p>
+    <p>League treasurer <b>Jordan Price</b>, age 34, took the cash box home to deposit at the bank on Monday. The league’s rule book says <b>two people must always handle cash together</b>, but Jordan took the box alone. The rule book also lets the treasurer keep a <b>$500 change float</b> (small bills for making change) for the next event.</p>
+    <p>On Monday, Jordan deposited $1,600. The league board did the math and called the police. Jordan says someone must have taken money from the box while his car was parked at a diner Saturday night.</p>
+  </div>
+
+  <h3>Timeline</h3>
+  <ol class="timeline">
+    <li><b>Sat 8:15 p.m.</b> Volunteers Mia Chen and Omar Haddad count the cash box: $5,200, including the $500 float.</li>
+    <li><b>Sat 8:20 p.m.</b> Vice president Taylor Moss signs out on the volunteer sheet.</li>
+    <li><b>Sat 8:40 p.m.</b> Jordan leaves with the cash box, alone.</li>
+    <li><b>Sat 9:08 to 9:51 p.m.</b> Jordan’s car is parked at Dockside Diner while he eats.</li>
+    <li><b>Sat 11:02 p.m.</b> Jordan texts his sister.</li>
+    <li><b>Mon 10:04 a.m.</b> Jordan deposits $1,600 in the league’s bank account.</li>
+    <li><b>Mon afternoon</b> Police interview Jordan. An officer also searches his car.</li>
+    <li><b>Tue</b> Jordan deposits $3,000 in cash into his own bank account.</li>
+  </ol>
+
+  <h3>Who’s involved</h3>
+  <div class="people">
+    <div><b>Jordan Price</b>League treasurer. The defendant in both trials.</div>
+    <div><b>Taylor Moss</b>League vice president. Running against Jordan in next month’s league election.</div>
+    <div><b>Mia Chen and Omar Haddad</b>Volunteers who counted the cash.</div>
+    <div><b>Officer Dana Reyes</b>Police officer who investigated.</div>
+    <div><b>Sam Ruiz</b>Bought Jordan’s motorcycle.</div>
+    <div><b>Lena Price</b>Jordan’s sister.</div>
+  </div>
+
+  <h2 style="margin-top:2rem">Two cases, two different jobs</h2>
+  <p class="prose">Real trials don’t ask “Did this person do something bad?” Each charge or claim is broken into parts called <b>elements</b>. The side bringing the case has to prove every element.</p>
+  <div class="two">
+    <div class="casebox crim">
+      <h3>Criminal case</h3>
+      <div class="name">The State v. Jordan Price</div>
+      <p><b>Charge:</b> Embezzlement, which means stealing money you were trusted to take care of.</p>
+      <p><b>The prosecutor must prove all three elements beyond a reasonable doubt:</b></p>
+      <ol><li>Jordan was trusted with the league’s money.</li><li>Jordan took some of it for himself.</li><li>He did it on purpose, not by accident or mistake.</li></ol>
+      <p><b>Possible sentence:</b> up to 12 months in jail, a fine, and paying the money back.</p>
+    </div>
+    <div class="casebox civ">
+      <h3>Civil case</h3>
+      <div class="name">Harbor Youth Soccer League v. Price</div>
+      <p><b>The league wins if it proves either claim, more likely than not:</b></p>
+      <p><b>Claim 1, taking:</b> Jordan took the league’s money for himself.</p>
+      <p><b>Claim 2, carelessness:</b> Jordan had a duty to protect the money, he broke that duty, and that caused money to be lost.</p>
+      <p><b>Possible result:</b> Jordan pays the league back for what was lost.</p>
+    </div>
+  </div>
+  <div class="note"><p><b>Notice something?</b> The civil case has a second way to win. The league might not be able to prove Jordan stole anything, but it might prove he was careless. Keep that in mind.</p></div>
+</section>
+
+<!-- 1 RULINGS -->
+<section data-step="1" aria-labelledby="h1" hidden>
+  <h2 id="h1">Before the criminal trial: you’re the judge</h2>
+  <p class="lede">Before a jury hears anything, lawyers argue about what evidence is allowed. These arguments are called objections. Decide each one, then read how a real judge would rule.</p>
+  <div id="rulings"></div>
+  <div class="note"><p>Whatever you decided, the trial will follow the real rules. The jury will not see the envelope or hear Coach Ito’s secondhand story, and the prosecutor can’t comment on Jordan’s silence.</p></div>
+</section>
+
+<!-- 2 CRIMINAL TRIAL -->
+<section data-step="2" aria-labelledby="h2c" hidden>
+  <span class="tag out" style="margin:0 0 .5rem">Criminal trial</span>
+  <h2 id="h2c">The State v. Jordan Price</h2>
+  <p class="lede">Jordan has chosen not to testify, which is his right under the Fifth Amendment. Read each exhibit and its cross-examination. Then answer the question: what does this evidence <i>actually</i> prove?</p>
+  <div class="note"><p><b>Think like a strong juror.</b> Separate what a piece of evidence shows directly from what someone wants you to guess from it. Ask who is speaking, how they know, and whether they have a reason to shade the truth.</p></div>
+  <div id="ev-crim"></div>
+</section>
+
+<!-- 3 CRIMINAL VERDICT -->
+<section data-step="3" aria-labelledby="h3" hidden>
+  <span class="tag out" style="margin:0 0 .5rem">Criminal trial</span>
+  <h2 id="h3">Jury room: the criminal verdict</h2>
+  <p class="lede">The judge explains: “You must decide each element separately. If even one element is not proven beyond a reasonable doubt, your verdict must be not guilty. Jordan’s choice not to testify cannot be held against him.”</p>
+  <div id="crim-els"></div>
+  <div class="actions"><button class="btn crim" id="vote-crim" type="button">Give my criminal verdict</button></div>
+  <div class="verdict" id="verdict-crim" hidden aria-live="polite"></div>
+
+  <div class="panel" style="margin-top:1.75rem">
+    <h3><label for="reason">Explain your verdict like a juror would</label></h3>
+    <p class="prose" style="margin-bottom:.6rem">Write a short paragraph to the other jurors. Then use the checklist to review your own reasoning.</p>
+    <textarea id="reason" placeholder="I voted… because…"></textarea>
+    <ul class="rubric" id="rubric"></ul>
+    <p class="status" id="rubric-out" aria-live="polite"></p>
+  </div>
+</section>
+
+<!-- 4 CIVIL TRIAL -->
+<section data-step="4" aria-labelledby="h4" hidden>
+  <span class="tag new" style="margin:0 0 .5rem">Civil trial</span>
+  <h2 id="h4">Harbor Youth Soccer League v. Price</h2>
+  <p class="lede">The league sues Jordan to get its money back. You’re on a new jury. Exhibits 1 through 9 come in again, but three important things change.</p>
+  <div class="two">
+    <div class="panel" style="margin:0"><h4>1. The envelope is allowed</h4><p style="margin:0">The illegal search was thrown out of the criminal trial. See Exhibit 10 for why the civil jury gets to see it.</p></div>
+    <div class="panel" style="margin:0"><h4>2. Jordan has to testify</h4><p style="margin:0">In a civil case, the other side can call the defendant as a witness and question him under oath.</p></div>
+  </div>
+  <div class="panel"><h4>3. The bar is lower, and there are two claims</h4><p style="margin:0">The league only has to show its claims are more likely true than not. And it can win by proving Jordan was careless, even if it can’t prove he stole.</p></div>
+  <p class="prose" style="margin-top:1rem">Coach Ito’s secondhand story is still not allowed. The rule against hearsay applies in both kinds of court.</p>
+
+  <div id="ev-civ"></div>
+
+  <h3 style="margin-top:2rem">Jordan’s testimony</h3>
+  <p class="prose">The league’s lawyer, Ms. Okafor, questions Jordan under oath.</p>
+  <dl class="testimony panel">
+    <dt>Ms. Okafor: Did you lock your car at the diner?</dt><dd>Jordan: “Yes. I always lock my car.”</dd>
+    <dt>Ms. Okafor: Why didn’t you count the cash Saturday night?</dt><dd>Jordan: “I was exhausted. I counted it Monday morning, and there was only $2,100.”</dd>
+    <dt>Ms. Okafor: Where did the $400 envelope come from?</dt><dd>Jordan: “That was left over from last fall’s raffle. I forgot to turn it in.”</dd>
+    <dt>Ms. Okafor: When did you sell your motorcycle?</dt><dd>Jordan: “A couple of weeks before the fundraiser. I kept the cash in a drawer at home and finally deposited it Tuesday.”</dd>
+    <dt>Ms. Okafor: What did you mean when you texted “I messed up big”?</dt><dd>Jordan: “I broke the two-person rule by taking the box alone. I knew I’d be in trouble.”</dd>
+  </dl>
+
+  <h3 style="margin-top:2rem">Investigation board: find the conflicts</h3>
+  <p class="prose">Strong jurors notice when two statements can’t both be true. Select two statements that conflict. There are <b>four</b> conflicting pairs hidden in this board. Some statements don’t conflict with anything.</p>
+  <div class="board" id="board" role="group" aria-label="Statements"></div>
+  <p class="boardmsg" id="boardmsg" aria-live="polite"></p>
+  <div class="found" id="found"></div>
+</section>
+
+<!-- 5 CIVIL VERDICT -->
+<section data-step="5" aria-labelledby="h5" hidden>
+  <span class="tag new" style="margin:0 0 .5rem">Civil trial</span>
+  <h2 id="h5">Jury room: the civil verdict</h2>
+  <p class="lede">The judge explains: “The league must prove its claim by a preponderance of the evidence, meaning more likely true than not. The league wins if it proves Claim 1 or Claim 2.”</p>
+
+  <h3>Claim 1: Taking</h3>
+  <div id="civ-take"></div>
+
+  <h3 style="margin-top:1.5rem">Claim 2: Carelessness</h3>
+  <p class="prose">For this claim, the league must prove all three parts, more likely than not.</p>
+  <div id="civ-care"></div>
+
+  <div class="actions"><button class="btn civ" id="vote-civ" type="button">Give my civil verdict</button></div>
+  <div class="verdict" id="verdict-civ" hidden aria-live="polite"></div>
+
+  <div class="panel" id="damages" hidden style="margin-top:1.75rem">
+    <h3>Figure out the damages</h3>
+    <p class="prose">The league asked for $3,600 ($5,200 counted minus $1,600 deposited). Jurors don’t have to accept the number a lawyer asks for. Decide which amounts are actually missing.</p>
+    <table class="ledger">
+      <tbody>
+        <tr><td>Cash counted Saturday night (Exhibit 1)</td><td class="amt">$5,200</td></tr>
+        <tr><td>Minus the money Jordan deposited Monday (Exhibit 2)</td><td class="amt">−$1,600</td></tr>
+        <tr><td><label><input type="checkbox" id="d-float"> Subtract the $500 change float. The rules let Jordan keep it for the next event, and he still has it.</label></td><td class="amt" id="a-float">$0</td></tr>
+        <tr><td><label><input type="checkbox" id="d-env"> Subtract the $400 from the envelope. Police returned it to the league.</label></td><td class="amt" id="a-env">$0</td></tr>
+        <tr class="total"><td>Damages Jordan must pay</td><td class="amt" id="d-total">$3,600</td></tr>
+      </tbody>
+    </table>
+    <div class="actions"><button class="btn civ" id="lock-dmg" type="button">Award these damages</button></div>
+    <div class="verdict" id="dmg-fb" hidden aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- 6 DEBRIEF -->
+<section data-step="6" aria-labelledby="h6" hidden>
+  <h2 id="h6">Debrief</h2>
+  <p class="lede">Here’s how your two trials turned out and how your thinking scored along the way.</p>
+  <div id="results"></div>
+  <h3 style="margin-top:2rem">What changed between the courtrooms</h3>
+  <p class="prose">Highlighted rows show rules that are the same in both kinds of court. Not everything is different.</p>
+  <div class="tbl-wrap">
+    <table class="cmp">
+      <thead><tr><th scope="col"></th><th scope="col" class="c1">Criminal case</th><th scope="col" class="c2">Civil case</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Who brings it</th><td>The government (prosecutor)</td><td>The person or group harmed (plaintiff)</td></tr>
+        <tr><th scope="row">How sure the jury must be</th><td>Beyond a reasonable doubt, on every element</td><td>More likely than not (preponderance of the evidence)</td></tr>
+        <tr><th scope="row">Ways to win</th><td>Prove every element of the crime</td><td>Prove every part of any one claim. Here, carelessness was enough.</td></tr>
+        <tr><th scope="row">Evidence from an illegal police search</th><td>Usually thrown out (Fourth Amendment)</td><td>Usually allowed</td></tr>
+        <tr><th scope="row">Must the defendant testify?</th><td>No. The jury can’t hold silence against them (Fifth Amendment).</td><td>The other side can call the defendant as a witness.</td></tr>
+        <tr><th scope="row">Hearsay</th><td class="same" colspan="2">Usually not allowed in either court. Witnesses should tell what they saw themselves, so they can be cross-examined.</td></tr>
+        <tr><th scope="row">Cross-examination</th><td class="same" colspan="2">Both sides can question every witness in both courts.</td></tr>
+        <tr><th scope="row">Jury vote</th><td>Must be unanimous</td><td>In many states, not all jurors must agree</td></tr>
+        <tr><th scope="row">Possible result</th><td>Jail, fines, probation, paying money back</td><td>Paying damages</td></tr>
+        <tr><th scope="row">Can both happen?</th><td colspan="2">Yes. Double jeopardy only stops the government from trying someone twice for the same crime. A civil lawsuit is not a second criminal trial.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3 style="margin-top:2rem">Discussion questions</h3>
+  <ol class="prose">
+    <li>The envelope could have changed the criminal jury’s mind, but they never saw it. Is it fair to throw out evidence that might be true? What would happen if police could search anywhere without a warrant?</li>
+    <li>Jordan changed his story about locking the car. Does one changed detail mean a person is lying about everything?</li>
+    <li>Taylor might be biased. Should a biased witness be ignored, or just weighed more carefully? What’s the difference?</li>
+    <li>If Jordan didn’t steal but was careless, is it fair that he has to pay? Who should carry the loss: the treasurer who broke the rules, or the league?</li>
+  </ol>
+</section>
+
+<!-- 7 QUIZ -->
+<section data-step="7" aria-labelledby="h7" hidden>
+  <h2 id="h7">Challenge quiz</h2>
+  <p class="lede">These questions use new situations, so you’ll have to apply the rules instead of remembering facts from the case.</p>
+  <div id="quiz"></div>
+  <p class="score" id="score" aria-live="polite"></p>
+  <div class="actions"><button class="btn ghost" id="restart" type="button">Start the whole simulation over</button></div>
+</section>
+
+<nav class="pager" aria-label="Page navigation">
+  <button class="btn ghost" id="prev" type="button">Back</button>
+  <button class="btn" id="next" type="button">Next</button>
+</nav>
+</main>
+
+<script>
+const STEPS=["Case file","Judge’s rulings","Criminal trial","Criminal verdict","Civil trial","Civil verdict","Debrief","Challenge quiz"];
+
+const RULINGS=[
+ {id:"search",title:"Objection 1: The car search",
+  text:"On Monday afternoon, Officer Reyes saw Jordan’s car parked at his job. She didn’t have a search warrant, and Jordan didn’t give permission, but she opened the car and searched it anyway. Under the seat she found a league envelope with $400 inside. The defense objects: “This was an illegal search.”",
+  ask:"Should the criminal jury see the envelope?",opts:["Allow it","Throw it out"],a:1,
+  fb:"A real judge would throw it out. The Fourth Amendment protects people from unreasonable searches by the government. When police search illegally, the evidence they find usually can’t be used against the defendant in a criminal trial. This is called the exclusionary rule. It exists so police have a reason to follow the rules."},
+ {id:"hearsay",title:"Objection 2: The coach’s story",
+  text:"The prosecutor calls Coach Ben Ito, who wants to say: “Taylor told me she saw Jordan stuffing cash into his jacket.” The defense objects: “Hearsay.”",
+  ask:"Should Coach Ito be allowed to say this?",opts:["Allow it","Don’t allow it"],a:1,
+  fb:"A real judge would not allow it. Coach Ito didn’t see anything himself. He’s repeating what someone else said, which is hearsay. The defense can’t cross-examine a statement that was made outside of court. If Taylor saw something, she should say it herself on the witness stand. Notice that Taylor never mentions a jacket when she testifies."},
+ {id:"rent",title:"Objection 3: The rent notices",
+  text:"The prosecutor wants to show two overdue rent notices Jordan received in March, totaling $1,850. The defense objects: “Being short on money doesn’t make someone a thief. This is unfair.”",
+  ask:"Should the jury see the rent notices?",opts:["Allow it","Don’t allow it"],a:0,
+  fb:"Most judges would allow it. It’s relevant to motive, a possible reason someone might do something. But the judge would warn the jury that motive is not proof. Plenty of people owe money and never steal. The defense makes a fair point, and the judge has to balance how useful the evidence is against how unfair it might be."},
+ {id:"silence",title:"Objection 4: Jordan’s silence",
+  text:"Jordan decides not to testify. In closing, the prosecutor starts to say: “If Jordan were innocent, wouldn’t he get up here and explain?” The defense objects.",
+  ask:"What should the judge do?",opts:["Let the prosecutor say it","Stop the prosecutor"],a:1,
+  fb:"A real judge would stop the prosecutor and tell the jury to ignore the comment. The Fifth Amendment says no one can be forced to be a witness against themselves in a criminal case. If juries could treat silence as guilt, that right would mean nothing. The government has to prove its case without the defendant’s help."}
+];
+
+const EVIDENCE=[
+ {n:1,title:"The count sheet",by:"Testimony from volunteers Mia Chen and Omar Haddad",
+  text:"Both volunteers signed a count sheet at 8:15 p.m. saying the box held $5,200, including the $500 change float.",
+  cross:"Defense asks Omar: “Did you count it twice?” Omar: “No. It was getting late and we wanted to go home, so we counted once, pretty fast.”",
+  q:"What does the count sheet actually prove?",opts:["Exactly $5,200 was in the box","Two volunteers wrote down $5,200 after one quick count","Jordan stole money"],a:1,
+  fb:"A document is only as good as the people who made it. Two signatures make the count believable, but one rushed count could contain a mistake. It’s strong evidence, not perfect evidence."},
+ {n:2,title:"League bank deposit",by:"Bank record",
+  text:"On Monday at 10:04 a.m., Jordan deposited $1,600 into the league’s account. He kept the $500 change float, which the rule book allows.",
+  cross:"No cross-examination. Both sides agree on this record.",
+  q:"Which statement does this exhibit support?",opts:["Jordan deposited $1,600 and kept the $500 float, as the rules allow","Keeping the float shows Jordan was stealing","The bank lost some of the money"],a:0,
+  fb:"Right. Keeping the float follows the rules. The real question is the gap between what was counted and what was deposited."},
+ {n:3,title:"Jordan’s statement to police",by:"Video of Officer Reyes’s interview, recorded Monday. Jordan spoke voluntarily.",
+  text:"“I stopped at Dockside Diner around 9 to eat. I left the box under the passenger seat. I think I left the car unlocked. I didn’t check the box until Monday morning. There was only $2,100, so I kept the $500 float and deposited the rest.” About the $3,000 he deposited Tuesday: “I sold my motorcycle Monday.”",
+  cross:"Prosecutor asks Officer Reyes: “Did Jordan report a theft Saturday night or Monday morning?” Reyes: “No. He only mentioned it when I questioned him.”",
+  q:"Jordan said he thinks he left the car unlocked. Why does that matter?",opts:["It explains how someone else could have taken the money","It proves someone broke into the car","It proves Jordan is lying"],a:0,
+  fb:"It offers another possible explanation, which matters a lot in a criminal trial. A possible explanation isn’t proof, but it can create reasonable doubt. Also notice: an honest person who found $3,100 missing might be expected to report it right away."},
+ {n:4,title:"Taylor Moss’s testimony",by:"League vice president",
+  text:"“At about 8:45, I saw Jordan sitting alone in his car in the parking lot with the cash box open on his lap. He was counting bills.”",
+  cross:"Defense: “You were about 50 yards away, at night?” Taylor: “There’s a streetlight.” Defense: “You’re running against Jordan in the league election?” Taylor: “That has nothing to do with this.” Defense: “The volunteer sheet says you signed out at 8:20.” Taylor: “I sat in my car on my phone for a while before I left.”",
+  q:"How should a juror treat Taylor’s testimony?",opts:["Ignore it completely, because she might be biased","Weigh it carefully: she may be biased, it was dark and far away, and the sign-out time raises questions","Accept it completely, because she’s a league officer"],a:1,
+  fb:"Bias doesn’t automatically make a witness wrong; it’s a reason to be careful. And think about this: even if Taylor is right, a treasurer counting the cash isn’t a crime. Her testimony shows Jordan was alone with the money, not that he took any."},
+ {n:5,title:"Diner security video",by:"Dockside Diner parking lot camera",
+  text:"Jordan’s car is parked from 9:08 to 9:51 p.m. At 9:31, a person in a gray jacket walks between Jordan’s car and a large pickup truck. For about 40 seconds, the truck blocks the camera’s view of the car’s passenger side.",
+  cross:"Prosecutor asks the diner manager: “Can you tell whether anyone opened the car?” Manager: “No. You just can’t see that side.”",
+  q:"What does the video show?",opts:["Someone broke into Jordan’s car","Nobody touched Jordan’s car","A person walked near the car, but we can’t see whether they opened it"],a:2,
+  fb:"Exactly. Strong jurors don’t fill in the blind spot with what they hope happened. The video doesn’t prove a theft, but it doesn’t rule one out either."},
+ {n:6,title:"Jordan’s personal bank records",by:"Bank record, obtained with a court order",
+  text:"On Tuesday, Jordan deposited $3,000 in cash into his own bank account.",
+  cross:"Defense asks the bank officer: “Does this record show where the cash came from?” Officer: “No. It only shows that cash was deposited.”",
+  q:"What does this record prove?",opts:["Jordan stole $3,000","Jordan deposited $3,000 in cash on Tuesday; the record doesn’t show where it came from","The cash came from selling the motorcycle"],a:1,
+  fb:"The timing is suspicious, and suspicious timing is real evidence. But the record alone doesn’t say where the money came from. That’s why the next exhibit matters."},
+ {n:7,title:"Sam Ruiz’s testimony",by:"Bought Jordan’s motorcycle",
+  text:"“I bought Jordan’s motorcycle and paid him $3,000 in cash. That was on Friday, March 27.” He shows a signed bill of sale dated March 27.",
+  cross:"Defense: “So Jordan really did receive $3,000 in cash from you?” Ruiz: “Yes, he did.”",
+  q:"Jordan told police he sold the motorcycle on Monday. What does Ruiz’s testimony mean?",opts:["Jordan’s explanation has a problem: the date doesn’t match","Ruiz must be lying","It proves the $3,000 came from the fundraiser"],a:0,
+  fb:"This cuts both ways. Ruiz proves Jordan really had $3,000 in cash from a legal source. But Jordan told police the wrong date. A wrong detail can hurt someone’s believability, but it doesn’t prove the money was stolen."},
+ {n:8,title:"Text message to Jordan’s sister",by:"Saturday, 11:02 p.m.",
+  text:"Jordan texted his sister Lena: “I messed up big. Please don’t tell anyone yet.”",
+  cross:"Defense asks Lena: “Did Jordan tell you what he meant?” Lena: “No. He never explained it.”",
+  q:"What’s the best way to describe this text?",opts:["A confession","A statement that could mean several different things","Proof that Jordan is innocent"],a:1,
+  fb:"It could mean “I stole money.” It could also mean “I broke the two-person rule” or “I lost track of the cash.” When evidence can reasonably mean different things, it’s weaker than it first looks."},
+ {n:9,title:"Overdue rent notices",by:"Allowed by the judge to show motive",
+  text:"Jordan received two overdue rent notices in March, totaling $1,850.",
+  cross:"Defense asks Officer Reyes: “Did you find any evidence Jordan used league money to pay rent?” Reyes: “No.”",
+  q:"What can the rent notices fairly show?",opts:["Jordan had a possible reason (motive) to want money","Jordan is a thief","Nothing at all; they should be ignored"],a:0,
+  fb:"Motive helps explain why someone might do something. It never proves that they did it."}
+];
+
+const ENVELOPE={n:10,title:"The envelope from Jordan’s car",by:"Found by Officer Reyes during the search without a warrant",isNew:true,
+  text:"A league envelope stamped “Harbor Youth Soccer” with $400 in cash inside, found under the driver’s seat. Police later returned the $400 to the league.",
+  cross:"Jordan’s lawyer: “Is there anything on this envelope that says it came from the April fundraiser?” Officer Reyes: “No. It just has the league’s name.”",
+  q:"Why can the civil jury see this when the criminal jury couldn’t?",opts:["The Fourth Amendment limits the government. The rule that throws out illegally found evidence usually doesn’t apply when one private party sues another.","The judge changed her mind about the search","Civil juries are allowed to see any evidence at all"],a:0,
+  fb:"Right. The exclusionary rule is meant to stop police from breaking the rules in criminal cases. In a lawsuit between private parties, courts usually allow the evidence. But hearsay and other rules still apply, so civil juries can’t see everything."};
+
+const STATEMENTS=[
+ {id:"g",src:"Count sheet (Exhibit 1)",t:"The box held $5,200 at 8:15 p.m. Saturday."},
+ {id:"a",src:"Jordan, to police (Exhibit 3)",t:"“I think I left the car unlocked.”"},
+ {id:"e",src:"Taylor Moss (Exhibit 4)",t:"“At about 8:45, I saw Jordan counting cash in his car.”"},
+ {id:"c",src:"Jordan, to police (Exhibit 3)",t:"“I sold my motorcycle Monday.”"},
+ {id:"i",src:"Diner video (Exhibit 5)",t:"Jordan’s car was parked at the diner from 9:08 to 9:51 p.m."},
+ {id:"h",src:"Jordan, testifying in civil court",t:"“I counted it Monday morning, and there was only $2,100.”"},
+ {id:"d",src:"Sam Ruiz (Exhibit 7)",t:"“I paid Jordan $3,000 on Friday, March 27.”"},
+ {id:"b",src:"Jordan, testifying in civil court",t:"“Yes. I always lock my car.”"},
+ {id:"j",src:"Lena Price (Exhibit 8)",t:"“He never explained what he meant.”"},
+ {id:"f",src:"Volunteer sign-out sheet (Exhibit 4)",t:"Taylor Moss signed out at 8:20 p.m."},
+ {id:"k",src:"Jordan, testifying in civil court",t:"“I broke the two-person rule by taking the box alone.”"}
+];
+const PAIRS={
+ "a|b":"Jordan changed his story about locking the car. If it was locked, the “someone took it at the diner” explanation gets weaker. If it was unlocked, Jordan was careless. Either way, this hurts Jordan, especially on the carelessness claim.",
+ "c|d":"Jordan told police he sold the motorcycle Monday, but the buyer and the bill of sale say March 27. In court, Jordan said he kept the cash at home for two weeks. Do you believe that explanation?",
+ "e|f":"Taylor signed out at 8:20 but says she saw Jordan at 8:45. She says she sat in her car first. That could be an honest explanation, or a sign her story isn’t reliable. You decide.",
+ "g|h":"This is the heart of the case: $5,200 on Saturday, $2,100 on Monday. Either the count was wrong, someone took money from the car, or Jordan took it."
+};
+const CRIM_ELS=[
+ {id:"e1",label:"Element 1: Jordan was trusted with the league’s money.",hint:"Both sides agree Jordan was the treasurer and took the box.",start:100},
+ {id:"e2",label:"Element 2: Jordan took some of the money for himself.",hint:"Weigh the count sheet, the diner video, the $3,000 deposit, and the motorcycle sale.",start:50},
+ {id:"e3",label:"Element 3: He did it on purpose, not by accident or mistake.",hint:"If you think he took it, was it deliberate? Think about the text and his statements.",start:50}
+];
+const CARE=[
+ {id:"duty",q:"Part A: Did Jordan have a duty to protect the league’s money?",hint:"He was the treasurer, and the rule book gave him responsibilities."},
+ {id:"breach",q:"Part B: Is it more likely than not that Jordan broke that duty?",hint:"Think about the two-person rule and how he left the box in his car."},
+ {id:"cause",q:"Part C: Is it more likely than not that his carelessness caused money to be lost?",hint:"If he had followed the rules, would the money still be gone?"}
+];
+const RUBRIC=["I named the element I was least sure about.","I used at least two specific exhibits.","I explained one piece of evidence that points the other way.","I didn’t use evidence the jury wasn’t allowed to see (the envelope or the coach’s story).","I didn’t count Jordan’s silence against him."];
+
+const QUIZ=[
+ {q:"Police search a student’s locker without a warrant or a good reason and find a stolen phone. At the criminal trial, what is most likely?",o:["The phone must be shown to the jury","The judge may throw out the phone as evidence","The trial is canceled","The student must testify about the phone"],a:1,
+  f:"Evidence from an illegal government search is usually excluded from a criminal trial, even if it’s real evidence."},
+ {q:"The phone’s owner sues the student in civil court. Can the phone be used as evidence there?",o:["Never","Usually yes, because the rule that throws out illegally found evidence usually applies to criminal cases","Only if the police officer apologizes","Only if the jury votes to see it"],a:1,
+  f:"The exclusionary rule is mainly a criminal-case rule meant to control police behavior."},
+ {q:"In a criminal trial, the defendant doesn’t testify. One juror says, “If he were innocent, he’d explain himself.” What should the other jurors say?",o:["Good point","We’re not allowed to hold his silence against him","He has to testify eventually","Silence counts as half an admission"],a:1,
+  f:"The Fifth Amendment protects the right not to testify, and jurors are instructed not to treat silence as evidence of guilt."},
+ {q:"A prosecutor proves two of three elements beyond a reasonable doubt. The jury thinks the third element is “probably” true. What is the verdict?",o:["Guilty","Not guilty","Guilty of two-thirds of the crime","The judge decides"],a:1,
+  f:"Every element must be proven beyond a reasonable doubt. “Probably” isn’t enough for even one."},
+ {q:"Why could Jordan lose the civil case even if the jury wasn’t sure he stole anything?",o:["Civil juries always side with the plaintiff","The league could win on the carelessness claim instead","Jordan didn’t testify","The envelope proved he stole"],a:1,
+  f:"The league only needed to prove every part of one claim. Breaking the two-person rule made the carelessness claim strong."},
+ {q:"Which of these is hearsay?",o:["A witness says, “I saw the car hit the fence.”","A witness says, “My neighbor told me she saw the car hit the fence.”","A security video of the car hitting the fence","The driver says, “I hit the fence.”"],a:1,
+  f:"Hearsay is repeating what someone else said outside of court to prove it’s true. The neighbor should testify herself. (A defendant’s own statement, like the driver’s, is treated differently.)"},
+ {q:"Jordan is found not guilty in criminal court. Can the league still sue him?",o:["No, double jeopardy protects him","Yes, double jeopardy only stops a second criminal trial for the same crime","Only if new evidence appears","Only with the prosecutor’s permission"],a:1,
+  f:"A civil lawsuit isn’t a criminal prosecution, so double jeopardy doesn’t block it."},
+ {q:"A witness is the defendant’s rival. What should a juror do with her testimony?",o:["Ignore it completely","Believe it completely","Consider the possible bias along with everything else when deciding how much to trust it","Ask the judge whether she’s telling the truth"],a:2,
+  f:"Bias is a reason to weigh testimony carefully, not to throw it away automatically. Deciding who to believe is the jury’s job."},
+ {q:"A witness changes one detail of her story between talking to police and testifying. What does this show?",o:["She’s lying about everything","Nothing, so it should be ignored","It may hurt her believability, and jurors should weigh how important the detail is and whether she has a good explanation","The case must be dismissed"],a:2,
+  f:"Inconsistencies matter, but people also misremember small things. Strong jurors ask how big the change is and why it happened."}
+];
+
+const state={};
+function resetState(){Object.assign(state,{step:0,rulings:{},ev:{},crim:{e1:100,e2:50,e3:50},crimVerdict:null,rubric:{},pairs:[],sel:null,take:50,care:{},civVerdict:null,dmg:null,quiz:{}})}
+resetState();
+const $=s=>document.querySelector(s);
+const money=n=>"$"+n.toLocaleString("en-US");
+
+/* Navigation */
+const tabs=$("#tabs");
+tabs.innerHTML=STEPS.map((t,i)=>`<li><button type="button" data-go="${i}">${i+1}. ${t}</button></li>`).join("");
+tabs.addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(b)go(+b.dataset.go)});
+$("#prev").onclick=()=>go(state.step-1);$("#next").onclick=()=>go(state.step+1);
+function go(i){
+  state.step=Math.max(0,Math.min(STEPS.length-1,i));
+  document.querySelectorAll("section[data-step]").forEach(s=>s.hidden=+s.dataset.step!==state.step);
+  tabs.querySelectorAll("button").forEach((b,j)=>{if(j===state.step){b.setAttribute("aria-current","step");b.scrollIntoView({block:"nearest",inline:"nearest"})}else b.removeAttribute("aria-current")});
+  $("#prev").style.visibility=state.step===0?"hidden":"visible";
+  const last=state.step===STEPS.length-1;$("#next").style.visibility=last?"hidden":"visible";
+  if(!last)$("#next").textContent="Next: "+STEPS[state.step+1];
+  if(state.step===6)renderResults();
+  window.scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+  const h=document.querySelector(`section[data-step="${state.step}"] h1, section[data-step="${state.step}"] h2`);
+  if(h){h.tabIndex=-1;h.focus({preventScroll:true})}
+}
+
+/* Rulings */
+function renderRulings(){
+  $("#rulings").innerHTML=RULINGS.map(r=>`<div class="panel ruling"><h3>${r.title}</h3><p class="prose">${r.text}</p>
+   <p class="q" style="font-weight:600;margin-bottom:.4rem">${r.ask}</p>
+   <div class="opts">${r.opts.map((o,j)=>`<button type="button" class="opt" data-rule="${r.id}" data-o="${j}">${o}</button>`).join("")}</div>
+   <p class="fb" id="rf-${r.id}" aria-live="polite"></p></div>`).join("");
+}
+$("#rulings").addEventListener("click",e=>{
+  const b=e.target.closest("[data-rule]");if(!b)return;const r=RULINGS.find(x=>x.id===b.dataset.rule);
+  if(r.id in state.rulings)return;const j=+b.dataset.o;state.rulings[r.id]=j;
+  b.parentElement.querySelectorAll(".opt").forEach((x,k)=>{x.disabled=true;if(k===r.a)x.classList.add("right");else if(k===j)x.classList.add("wrong")});
+  $("#rf-"+r.id).innerHTML=(j===r.a?"<b>You ruled like a real judge.</b> ":"<b>A real judge would rule the other way.</b> ")+r.fb;
+});
+
+/* Evidence */
+function exhibit(ev,zone){
+  return `<article class="ex"><div class="ex-h"><span class="ex-n">Exhibit ${ev.n}</span><h4>${ev.title}${ev.isNew?'<span class="tag new">New in civil court</span>':""}</h4></div>
+   <div class="ex-body"><div class="by">${ev.by}</div><p style="margin:0">${ev.text}</p>
+   <button type="button" class="linkish" data-cross="${zone}-${ev.n}" aria-expanded="false" style="margin-top:.5rem">Cross-examination</button>
+   <p class="cross" id="x-${zone}-${ev.n}" hidden>${ev.cross}</p>
+   <div class="check"><p class="q">${ev.q}</p><div class="opts">${ev.opts.map((o,j)=>`<button type="button" class="opt" data-ev="${ev.n}" data-o="${j}">${o}</button>`).join("")}</div>
+   <p class="fb" id="ef-${zone}-${ev.n}" aria-live="polite"></p></div></div></article>`;
+}
+function renderEvidence(){
+  $("#ev-crim").innerHTML=EVIDENCE.map(e=>exhibit(e,"crim")).join("");
+  $("#ev-civ").innerHTML=exhibit(ENVELOPE,"civ");
+}
+document.addEventListener("click",e=>{
+  const x=e.target.closest("[data-cross]");
+  if(x){const p=$("#x-"+x.dataset.cross);p.hidden=!p.hidden;x.setAttribute("aria-expanded",String(!p.hidden));return}
+  const b=e.target.closest("[data-ev]");if(!b)return;
+  const n=+b.dataset.ev;if(n in state.ev)return;const ev=n===10?ENVELOPE:EVIDENCE[n-1];const j=+b.dataset.o;state.ev[n]=j;
+  b.parentElement.querySelectorAll(".opt").forEach((y,k)=>{y.disabled=true;if(k===ev.a)y.classList.add("right");else if(k===j)y.classList.add("wrong")});
+  b.closest(".check").querySelector(".fb").innerHTML=(j===ev.a?"<b>Sharp thinking.</b> ":"<b>Look again.</b> ")+ev.fb;
+});
+
+/* Sliders */
+function slider(host,id,bar,label,hint,start,onchange){
+  const div=document.createElement("div");div.className="el";
+  div.innerHTML=`<label for="r-${id}">${label}</label>${hint?`<p class="hint">${hint}</p>`:""}
+   <div class="meter" aria-hidden="true"><div class="track"><div class="fill" id="f-${id}"></div></div>
+   <div class="mark b${bar}"><span>${bar===90?"Beyond a reasonable doubt":"More likely than not"}</span></div></div>
+   <input type="range" min="0" max="100" id="r-${id}" value="${start}">
+   <p class="readout"><span id="o-${id}"></span> <span class="status" id="s-${id}"></span></p>`;
+  host.appendChild(div);
+  const r=div.querySelector("input");
+  const upd=()=>{const v=+r.value;div.querySelector(".fill").style.width=v+"%";
+    const words=v>=90?"firmly convinced":v>=75?"pretty sure, with some doubt":v>50?"leaning yes":v===50?"evenly split":v>25?"leaning no":"convinced it’s not true";
+    div.querySelector(`#o-${id}`).textContent=`${v}% sure: ${words}.`;
+    const met=bar===90?v>=90:v>50;const s=div.querySelector(`#s-${id}`);s.textContent=met?"Meets the bar":"Doesn’t meet the bar";s.className="status "+(met?"met":"not");
+    r.setAttribute("aria-valuetext",`${v}% sure, ${met?"meets":"does not meet"} the bar`);onchange(v)};
+  r.addEventListener("input",upd);upd();
+}
+function renderSliders(){
+  const ce=$("#crim-els");ce.innerHTML="";
+  CRIM_ELS.forEach(el=>slider(ce,el.id,90,el.label,el.hint,state.crim[el.id],v=>state.crim[el.id]=v));
+  const ct=$("#civ-take");ct.innerHTML="";
+  slider(ct,"take",50,"How sure are you that Jordan took the league’s money for himself?","Remember: in this courtroom you can consider the envelope and Jordan’s testimony.",state.take,v=>state.take=v);
+  $("#civ-care").innerHTML=CARE.map(c=>`<div class="el" role="group" aria-labelledby="cq-${c.id}"><p id="cq-${c.id}" style="font-weight:600;margin:0">${c.q}</p><p class="hint">${c.hint}</p>
+   <div class="yn"><button type="button" class="chip" data-care="${c.id}" data-v="yes" aria-pressed="false">Yes</button><button type="button" class="chip" data-care="${c.id}" data-v="no" aria-pressed="false">No</button></div></div>`).join("");
+}
+$("#civ-care").addEventListener("click",e=>{const b=e.target.closest("[data-care]");if(!b)return;state.care[b.dataset.care]=b.dataset.v;b.parentElement.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",String(c===b)))});
+
+/* Criminal verdict */
+$("#vote-crim").onclick=()=>{
+  const failed=CRIM_ELS.filter(el=>state.crim[el.id]<90);const g=failed.length===0;
+  state.crimVerdict=g?"Guilty":"Not guilty";
+  const out=$("#verdict-crim");out.hidden=false;
+  out.innerHTML=`<h3>Your verdict: ${state.crimVerdict}</h3>`+(g
+   ?`<p>You found every element proven beyond a reasonable doubt. For a real conviction, all twelve jurors would have to agree. Before you lock this in, ask yourself: which piece of evidence removed your doubt about the person near the car on the diner video?</p>`
+   :`<p>Not proven beyond a reasonable doubt: <b>${failed.map(f=>f.label.split(":")[0]).join(" and ")}</b>. Because at least one element fell short, the verdict must be not guilty, even if you suspect Jordan did it.</p><p>“Not guilty” means the State didn’t prove its case. It doesn’t mean the jury decided Jordan is innocent. The civil trial asks a different question.</p>`);
+};
+function renderRubric(){
+  $("#rubric").innerHTML=RUBRIC.map((t,i)=>`<li><label><input type="checkbox" data-rub="${i}"><span>${t}</span></label></li>`).join("");
+  $("#rubric-out").textContent="";$("#reason").value="";
+}
+$("#rubric").addEventListener("change",e=>{const c=e.target.closest("[data-rub]");if(!c)return;state.rubric[c.dataset.rub]=c.checked;
+  const n=Object.values(state.rubric).filter(Boolean).length;
+  $("#rubric-out").textContent=n===RUBRIC.length?"All five checked. That’s the kind of reasoning that persuades other jurors.":`${n} of ${RUBRIC.length} checked. Revise your paragraph to add what’s missing.`});
+
+/* Contradiction board */
+function renderBoard(){
+  $("#board").innerHTML=STATEMENTS.map(s=>`<button type="button" class="stmt" data-st="${s.id}" aria-pressed="false"><small>${s.src}</small>${s.t}</button>`).join("");
+  $("#found").innerHTML="";$("#boardmsg").textContent="";
+}
+$("#board").addEventListener("click",e=>{
+  const b=e.target.closest("[data-st]");if(!b||b.classList.contains("matched"))return;
+  const id=b.dataset.st;
+  if(state.sel===id){state.sel=null;b.setAttribute("aria-pressed","false");$("#boardmsg").textContent="";return}
+  if(!state.sel){state.sel=id;b.setAttribute("aria-pressed","true");$("#boardmsg").textContent="Now select a statement that conflicts with it.";return}
+  const key=[state.sel,id].sort().join("|");const first=$(`[data-st="${state.sel}"]`);
+  first.setAttribute("aria-pressed","false");state.sel=null;
+  if(PAIRS[key]&&!state.pairs.includes(key)){
+    state.pairs.push(key);const num=state.pairs.length;
+    [first,b].forEach(el=>{el.classList.add("matched");el.setAttribute("aria-disabled","true");el.insertAdjacentHTML("beforeend",`<span class="pin" aria-label="Conflict ${num}">${num}</span>`)});
+    $("#found").insertAdjacentHTML("beforeend",`<p><b>Conflict ${num}.</b> ${PAIRS[key]}</p>`);
+    $("#boardmsg").textContent=num===4?"You found all four conflicts. Now decide what they mean for each claim.":`Conflict found. ${4-num} to go.`;
+  }else{
+    $("#boardmsg").textContent="Those two can both be true at the same time, so they don’t conflict. Try another pair.";
+  }
+});
+
+/* Civil verdict */
+$("#vote-civ").onclick=()=>{
+  const missing=CARE.filter(c=>!state.care[c.id]);
+  const out=$("#verdict-civ");out.hidden=false;
+  if(missing.length){out.innerHTML=`<p>Answer Yes or No for every part of Claim 2 before giving your verdict.</p>`;return}
+  const c1=state.take>50,c2=CARE.every(c=>state.care[c.id]==="yes");const l=c1||c2;
+  state.civVerdict={liable:l,c1,c2};
+  const why=c1&&c2?"You found both claims proven.":c1?"You found the taking claim proven.":c2?"You weren’t convinced Jordan took the money, but you found every part of the carelessness claim proven. That’s enough.":"Neither claim was proven.";
+  const failNote=!c2?`<p>On Claim 2, you said no to: ${CARE.filter(c=>state.care[c.id]==="no").map(c=>c.q.split(":")[0]).join(", ")}.</p>`:"";
+  out.innerHTML=`<h3>Your verdict: ${l?"Liable":"Not liable"}</h3><p>${why}</p>${failNote}`+
+   (state.crimVerdict?`<p>In the criminal trial you said <b>${state.crimVerdict}</b>. ${state.crimVerdict==="Not guilty"&&l?"Same person, same missing money, different verdicts. Different rules, different questions, and different evidence made the difference.":""}</p>`:"")+
+   (l?`<p>Now decide how much Jordan owes.</p>`:"");
+  $("#damages").hidden=!l;if(l)$("#damages").scrollIntoView({behavior:"smooth",block:"start"});
+};
+function dmgTotal(){const f=$("#d-float").checked,e=$("#d-env").checked;$("#a-float").textContent=f?"−$500":"$0";$("#a-env").textContent=e?"−$400":"$0";
+  const t=5200-1600-(f?500:0)-(e?400:0);$("#d-total").textContent=money(t);return {f,e,t}}
+$("#d-float").onchange=dmgTotal;$("#d-env").onchange=dmgTotal;
+$("#lock-dmg").onclick=()=>{
+  const {f,e,t}=dmgTotal();state.dmg=t;const out=$("#dmg-fb");out.hidden=false;
+  let msg=`<h3>You awarded ${money(t)}</h3>`;
+  if(!f)msg+=`<p><b>Reconsider the $500 float.</b> The rule book lets the treasurer keep it, and Jordan still has it. It isn’t missing, so it isn’t part of the loss. (The league can ask for the float back, but that’s different from damages for lost money.)</p>`;
+  else msg+=`<p><b>Good catch on the float.</b> It was never missing, so it shouldn’t be counted as a loss. Many people miss that the $3,600 the league asked for includes it.</p>`;
+  msg+=e?`<p><b>You subtracted the envelope.</b> That makes sense if you believe the $400 came from this fundraiser. Since the league already got it back, counting it again would make Jordan pay twice.</p>`
+        :`<p><b>You didn’t subtract the envelope.</b> That makes sense if you believe Jordan that the $400 came from last fall’s raffle. Then it doesn’t make up for this loss.</p>`;
+  if(f)msg+=`<p>Both ${money(3100)} and ${money(2700)} can be defended. What matters is that your number matches what you believe about the evidence.</p>`;
+  out.innerHTML=msg;
+};
+
+/* Results */
+function renderResults(){
+  const rc=RULINGS.filter(r=>state.rulings[r.id]===r.a).length;
+  const ec=[...EVIDENCE,ENVELOPE].filter(e=>state.ev[e.n]===e.a).length;
+  const cv=state.civVerdict;
+  let html=`<div class="scores">
+    <div><b>${rc} of 4</b><span>Rulings that matched a real judge</span></div>
+    <div><b>${ec} of 10</b><span>Exhibits analyzed correctly</span></div>
+    <div><b>${state.pairs.length} of 4</b><span>Conflicts found</span></div>
+    <div><b>${state.dmg!=null?money(state.dmg):"None yet"}</b><span>Damages awarded</span></div></div>`;
+  if(state.crimVerdict&&cv){
+    html+=`<div class="panel"><p><b>Criminal trial:</b> ${state.crimVerdict}. <b>Civil trial:</b> ${cv.liable?"Liable":"Not liable"}${cv.liable?` (${cv.c1&&cv.c2?"both claims":cv.c1?"taking claim":"carelessness claim"})`:""}.</p>`+
+     (state.crimVerdict==="Not guilty"&&cv.liable&&!cv.c1?`<p style="margin:0">This is the result many lawyers would predict. The evidence of theft had real gaps, but Jordan clearly broke the two-person rule, and the civil case gave the league a way to win without proving theft.</p>`
+     :state.crimVerdict==="Not guilty"&&cv.liable?`<p style="margin:0">You weren’t firmly convinced Jordan stole, but you thought it was more likely than not. The envelope and Jordan’s changing story, which only the civil jury could weigh, may have made the difference.</p>`
+     :state.crimVerdict==="Guilty"&&cv.liable?`<p style="margin:0">Your verdicts match. If the evidence convinced you beyond a reasonable doubt, it easily clears the lower civil bar too.</p>`
+     :`<p style="margin:0">Compare your verdicts with a classmate’s. Which exhibit did you weigh differently?</p>`)+`</div>`;
+  }else html+=`<div class="panel"><p style="margin:0">You haven’t given both verdicts yet. Go back to the verdict pages to vote, then return here.</p></div>`;
+  $("#results").innerHTML=html;
+}
+
+/* Quiz */
+function renderQuiz(){
+  $("#quiz").innerHTML=QUIZ.map((q,i)=>`<div class="panel"><p style="font-weight:600">${i+1}. ${q.q}</p><div class="opts">${q.o.map((o,j)=>`<button type="button" class="opt" data-q="${i}" data-o="${j}">${o}</button>`).join("")}</div><p class="fb" id="qf-${i}" aria-live="polite"></p></div>`).join("");
+  $("#score").textContent="";
+}
+$("#quiz").addEventListener("click",e=>{
+  const b=e.target.closest("[data-q]");if(!b)return;const i=+b.dataset.q,j=+b.dataset.o;if(i in state.quiz)return;
+  state.quiz[i]=j;const q=QUIZ[i];
+  b.parentElement.querySelectorAll(".opt").forEach((x,k)=>{x.disabled=true;if(k===q.a)x.classList.add("right");else if(k===j)x.classList.add("wrong")});
+  $("#qf-"+i).innerHTML=(j===q.a?"<b>Correct.</b> ":"<b>Not quite.</b> ")+q.f;
+  if(Object.keys(state.quiz).length===QUIZ.length){const s=QUIZ.filter((q,k)=>state.quiz[k]===q.a).length;
+    $("#score").textContent=`You got ${s} out of ${QUIZ.length}. ${s===QUIZ.length?"Outstanding. You’re thinking like a lawyer.":s>=7?"Strong work. Review the explanations for the ones you missed.":"Go back to the Debrief table, then try explaining each missed question to a partner."}`}
+});
+
+function renderAll(){
+  renderRulings();renderEvidence();renderSliders();renderRubric();renderBoard();renderQuiz();
+  $("#verdict-crim").hidden=true;$("#verdict-civ").hidden=true;$("#damages").hidden=true;$("#dmg-fb").hidden=true;
+  $("#d-float").checked=false;$("#d-env").checked=false;dmgTotal();
+}
+$("#restart").onclick=()=>{resetState();renderAll();go(0)};
+renderAll();go(0);
+</script>
+</body>
+</html>
